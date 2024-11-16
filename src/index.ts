@@ -3,9 +3,13 @@ import { GameWebSocket } from './connections/SocketGameChannel';
 interface SDKConfig {
     authUrl: string;
     socketUrl: string;
+    playerNamespace?: string;
+    globalNamespace?: string;
+    apiUrl?: string;
+    twitch?: object;
 }
 
-export class GameSDK {
+class GameSDK {
     private gameWebSocket: GameWebSocket | null = null;
     private isAuthenticated = false;
 
@@ -72,3 +76,5 @@ export class GameSDK {
         }
     }
 }
+
+export { GameSDK, SDKConfig };
