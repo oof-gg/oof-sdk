@@ -14,7 +14,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@oof.gg/protobuf-ts": "^1.0.28",
+    "@oof.gg/protobuf-ts": "^1.0.36",
     "@types/jest": "^27.5.2",
     "@types/node": "^16.18.119",
     "axios": "^1.7.7",

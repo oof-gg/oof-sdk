@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { EventEmitter } from 'events';
 export declare class EventDispatcher extends EventEmitter {
     emitEvent(namespace: string, eventType: string, data: any): void;

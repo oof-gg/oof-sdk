@@ -1,5 +1,5 @@
 import { WebSocketManager } from './WebSocketManager';
-import { GlobalEvent } from '@oof.gg/protobuf-ts/dist/global/event';
+import { global_event } from '@oof.gg/protobuf-ts';
 
 export class SocketGlobalChannel {
     private readonly namespace: string = '/global';
@@ -11,7 +11,7 @@ export class SocketGlobalChannel {
 
     public subscribeToGlobalEvent(eventType: string, callback: (data: any) => void): void {
         this.webSocketManager.onEvent(eventType, (data: Uint8Array) => {
-            const event = GlobalEvent.decode(data);
+            const event = global_event.GlobalEvent.decode(data);
             callback(event);
         });
     }
