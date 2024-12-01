@@ -20,24 +20,24 @@ class GameSDK {
 
     public events = {
         local: {
-            on: (eventType: string, callback: (data: any) => void) => {
+            on: (eventType: any, callback: (data: any) => void) => {
                 // Implement local event handling logic here
             },
-            emit: (eventType: string, payload: any) => {
+            emit: (eventType: any, payload: any) => {
                 // Implement local event emitting logic here
             }
         },
         websocket: {
             game: {
-                on: (eventType: string, callback: (data: any) => void) => {
+                on: (eventType: any, callback: (data: any) => void) => {
                     this.gameChannel.onEvent(eventType, callback);
                 },
-                emit: (eventType: string, payload: any) => {
+                emit: (eventType: any, payload: any) => {
                     this.gameChannel.sendEvent(eventType, payload);
                 }
             },
             global: {
-                on: (eventType: string, callback: (data: any) => void) => {
+                on: (eventType: any, callback: (data: any) => void) => {
                     this.globalChannel.subscribeToGlobalEvent(eventType, callback);
                 }
             }
