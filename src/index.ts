@@ -1,4 +1,7 @@
-import { GameWebSocket } from './connections/SocketGameChannel';
+import { SocketGameChannel } from './connections/SocketGameChannel';
+import { SocketGlobalChannel } from './connections/SocketGlobalChannel';
+import { WebSocketManager } from './connections/WebSocketManager';
+import { config } from './config/config';
 
 interface SDKConfig {
     authUrl: string;
@@ -10,70 +13,57 @@ interface SDKConfig {
 }
 
 class GameSDK {
-    private gameWebSocket: GameWebSocket | null = null;
-    private isAuthenticated = false;
+    private webSocketManager: WebSocketManager;
+    private gameChannel: SocketGameChannel;
+    private globalChannel: SocketGlobalChannel;
+    private authenticated: boolean = false;
 
-    // pass in generated token from App wrapper that loads the game
-    constructor(private config: SDKConfig, private authToken: string) {
-        if (!authToken)
-          throw new Error('No authentication token provided.');
+    public events = {
+        local: {
+            on: (eventType: string, callback: (data: any) => void) => {
+                // Implement local event handling logic here
+            },
+            emit: (eventType: string, payload: any) => {
+                // Implement local event emitting logic here
+            }
+        },
+        websocket: {
+            game: {
+                on: (eventType: string, callback: (data: any) => void) => {
+                    this.gameChannel.onEvent(eventType, callback);
+                },
+                emit: (eventType: string, payload: any) => {
+                    this.gameChannel.sendEvent(eventType, payload);
+                }
+            },
+            global: {
+                on: (eventType: string, callback: (data: any) => void) => {
+                    this.globalChannel.subscribeToGlobalEvent(eventType, callback);
+                }
+            }
+        }
+    };
+
+    constructor(private sdkConfig: SDKConfig) {
+        this.webSocketManager = new WebSocketManager(sdkConfig.socketUrl);
+        this.gameChannel = new SocketGameChannel(this.webSocketManager);
+        this.globalChannel = new SocketGlobalChannel(this.webSocketManager);
     }
 
-    /**
-     * Initializes the SDK by authenticating the player and preparing the WebSocket connection.
-     */
-    public async initialize(): Promise<void> {
-        // Authenticate the player
-        console.log('Player authenticated successfully.');
-
+    public async connect(token: string): Promise<void> {
         try {
-          // Prepare the game WebSocket connection
-          this.gameWebSocket = new GameWebSocket(this.config.socketUrl, this.authToken);
-          await this.gameWebSocket.connect();
-          this.isAuthenticated = true;
-          console.log('Game WebSocket connected.');
+            await this.gameChannel.connect(token);
+            this.authenticated = true;
+            console.log('GameSDK connected successfully.');
         } catch (error) {
-          console.error('Failed to connect to game WebSocket:', error);
-          throw error;
+            console.error('Failed to connect GameSDK:', error);
+            throw error;
         }
     }
 
-    /**
-     * Sends an event through the game WebSocket.
-     * @param eventType - The type of event to send.
-     * @param payload - The event payload.
-     */
-    public sendEvent(eventType: string, payload: any): void {
-        if (!this.gameWebSocket) {
-            console.error('Game WebSocket is not connected.');
-            return;
-        }
-        this.gameWebSocket.sendEvent(eventType, payload);
-    }
-
-    /**
-     * Listens for an event from the game WebSocket.
-     * @param eventType - The type of event to listen for.
-     * @param callback - The function to execute when the event is received.
-     */
-    public onEvent(eventType: string, callback: (data: any) => void): void {
-        if (!this.gameWebSocket) {
-            console.error('Game WebSocket is not connected.');
-            return;
-        }
-        this.gameWebSocket.onEvent(eventType, callback);
-    }
-
-    /**
-     * Disconnects the game WebSocket.
-     */
     public disconnect(): void {
-        if (this.gameWebSocket) {
-            this.gameWebSocket.disconnect();
-            console.log('Game WebSocket disconnected.');
-        } else {
-            console.warn('No active game WebSocket to disconnect.');
-        }
+        this.gameChannel.disconnect();
+        this.authenticated = false;
     }
 }
 
