@@ -61,7 +61,7 @@ jobs:
           npm run build
           git config user.email "brian@oof.gg"
           git config user.name "Brian S."
-          
+
           echo "Committing the new version and pushing to GitHub..."
           git add dist package.json package-lock.json
           
@@ -71,7 +71,6 @@ jobs:
           echo "Bumping the version (choose one of patch, minor, or major)"
           NEW_VERSION=$(npm version patch -m "ci: bump version to %s")
 
-          git commit -m "ci: bump version to $NEW_VERSION"
           git push --follow-tags
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
