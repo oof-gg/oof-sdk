@@ -63,6 +63,7 @@ jobs:
           git config user.name "Brian S."
 
           echo "Committing the new version and pushing to GitHub..."
+          git pull
           git add dist package.json package-lock.json
           
           echo "Committing the staged changes..."
@@ -77,7 +78,6 @@ jobs:
 
       - name: Publish to npm
         run: |
-          ls -l
           echo "Publishing to npm..."
           npm publish --access public
         env:
