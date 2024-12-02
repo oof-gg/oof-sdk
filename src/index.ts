@@ -1,5 +1,6 @@
 import { SocketGameChannel } from './connections/SocketGameChannel';
 import { SocketGlobalChannel } from './connections/SocketGlobalChannel';
+import { EventDispatcher } from './events/EventDispatcher';
 import { WebSocketManager } from './connections/WebSocketManager';
 import { config } from './config/config';
 
@@ -17,34 +18,47 @@ class GameSDK {
     private gameChannel: SocketGameChannel;
     private globalChannel: SocketGlobalChannel;
     private authenticated: boolean = false;
+    private eventDispatcher: any;
 
     public events = {
         local: {
-            on: (eventType: any, callback: (data: any) => void) => {
-                // Implement local event handling logic here
+            on: (eventType: any, callback: (data: any) => void, context?: EventTarget) => {
+                this.eventDispatcher.subscribe('local', eventType, callback, context);
             },
-            emit: (eventType: any, payload: any) => {
-                // Implement local event emitting logic here
+            emit: (eventType: any, payload: any, context?: EventTarget) => {
+                this.eventDispatcher.emitEvent('local', eventType, payload, context);
             }
         },
-        websocket: {
+        web: {
             game: {
-                on: (eventType: any, callback: (data: any) => void) => {
-                    this.gameChannel.onEvent(eventType, callback);
+                on: (eventType: string, callback: (data: any) => void, context?: EventTarget) => {
+                    this.gameChannel.onEvent(eventType, (data) => {
+                        this.eventDispatcher.emitEvent('websocket.game', eventType, data, context);
+                        callback(data);
+                    });
                 },
-                emit: (eventType: any, payload: any) => {
+                emit: (eventType: string, payload: any) => {
                     this.gameChannel.sendEvent(eventType, payload);
                 }
             },
             global: {
-                on: (eventType: any, callback: (data: any) => void) => {
-                    this.globalChannel.subscribeToGlobalEvent(eventType, callback);
+                on: (eventType: string, callback: (data: any) => void, context?: EventTarget) => {
+                    this.globalChannel.subscribeToGlobalEvent(eventType, (data) => {
+                        this.eventDispatcher.emitEvent('websocket.global', eventType, data, context);
+                        callback(data);
+                    });
                 }
+            }
+        },
+        log: {
+            getEventLog: () => {
+                return this.eventDispatcher.getEventLog();
             }
         }
     };
 
-    constructor(private sdkConfig: SDKConfig) {
+    public init(sdkConfig: SDKConfig, shadowRoot: ShadowRoot | null = null) {
+        this.eventDispatcher = new EventDispatcher(shadowRoot);
         this.webSocketManager = new WebSocketManager(sdkConfig.socketUrl);
         this.gameChannel = new SocketGameChannel(this.webSocketManager);
         this.globalChannel = new SocketGlobalChannel(this.webSocketManager);

@@ -1,7 +1,13 @@
 /// <reference types="node" />
 import { EventEmitter } from 'events';
 export declare class EventDispatcher extends EventEmitter {
-    emitEvent(namespace: string, eventType: string, data: any): void;
-    subscribe(namespace: string, eventType: string, callback: (data: any) => void): void;
-    unsubscribe(namespace: string, eventType: string, callback: (data: any) => void): void;
+    private shadowRoot;
+    private eventLog;
+    constructor(shadowRoot?: ShadowRoot | null);
+    emitEvent(namespace: string, eventType: string, data: any, context?: EventTarget): void;
+    getEventLog(): {
+        [key: string]: number;
+    };
+    subscribe(namespace: string, eventType: string, callback: (data: any) => void, context?: EventTarget): void;
+    unsubscribe(namespace: string, eventType: string, callback: (data: any) => void, context?: EventTarget): void;
 }
