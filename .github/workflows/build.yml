@@ -73,7 +73,6 @@ jobs:
 
       - name: Publish to npm
         run: |
-          cd generated/typescript
           ls -l
           echo "Publishing to npm..."
           npm publish --access public
