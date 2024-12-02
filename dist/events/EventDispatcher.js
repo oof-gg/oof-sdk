@@ -15,7 +15,7 @@ class EventDispatcher extends events_1.EventEmitter {
         if (target) {
             target.dispatchEvent(new CustomEvent(`${namespace}.${eventType}`, {
                 detail: data,
-                bubbles: true,
+                bubbles: true, // Allows the event to bubble up through the DOM
                 composed: true // Allows the event to pass through shadow DOM boundaries
             }));
         }

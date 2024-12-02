@@ -1,4 +1,3 @@
-/// <reference types="node" />
 import { EventEmitter } from 'events';
 export declare class EventDispatcher extends EventEmitter {
     private shadowRoot;
