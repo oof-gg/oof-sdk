@@ -55,7 +55,6 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd generated/typescript
           echo "Installing npm dependencies..."
           npm ci
           npm install --save
