@@ -12,7 +12,8 @@ export class EventDispatcher extends EventEmitter {
     constructor(private workerUrl: string = '/workers/worker.js') {
         super();
         if (typeof SharedWorker !== 'undefined') {
-            this.worker = new SharedWorker(workerUrl);
+            console.log('[EventDispatcher] SharedWorker is supported', workerUrl);
+            this.worker = new SharedWorker(workerUrl, 'oof-shared-worker');
             this.port = this.worker.port
             this.port.onmessage = this.handleWorkerMessage.bind(this);
         }
@@ -31,8 +32,12 @@ export class EventDispatcher extends EventEmitter {
             const key = `${namespace}.${eventType}`;
             this.eventLog[key] = (this.eventLog[key] || 0) + 1;
             if (this.port) {
-                this.port.postMessage({ namespace, eventType, data });
+                if(namespace === 'local') {
+                    console.log(`[EventDispatcher] Emitting event (worker): ${key}`, data);
+                    this.port.postMessage({ namespace, eventType, data });
+                }
             } else {
+                console.log(`[EventDispatcher] Emitting event (local): ${key}`, data);
                 this.emit(key, data);
             }
         } else {
