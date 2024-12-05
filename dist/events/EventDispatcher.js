@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EventDispatcher = void 0;
 const events_1 = require("events");
-const protobuf_ts_1 = require("@oof.gg/protobuf-ts");
 // Convert the game instance to a JSON object
 class EventDispatcher extends events_1.EventEmitter {
     constructor(shadowRoot = null) {
@@ -53,8 +52,8 @@ class EventDispatcher extends events_1.EventEmitter {
         }
     }
     isAllowedEvent(eventType) {
-        return Object.values(protobuf_ts_1.game_instance.InstanceCommandEnum).includes(eventType) ||
-            Object.values(protobuf_ts_1.game_instance.InstanceStateEnum).includes(eventType);
+        // TODO: implement a list of allowed events
+        return true;
     }
     getEventLog() {
         return this.eventLog;
