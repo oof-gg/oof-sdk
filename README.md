@@ -34,12 +34,9 @@ export const main = async () => {
     console.log('STOP event received:', data);
   });
 
-  //Close Button that triggers the ABORT event
-  const closeButton = document.getElementById('closeButton');
-  closeButton?.addEventListener('click', () => {
-    oof.events.local.emit('ABORT', {
-      reason: 'User closed the game'
-    });
+  // Requests to App
+  oof.events.local.emit('ABORT', {
+    reason: 'User closed the game'
   });
 }
 ```
