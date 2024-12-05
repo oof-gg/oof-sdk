@@ -1,5 +1,4 @@
 import { EventEmitter } from 'events';
-import { game_instance } from '@oof.gg/protobuf-ts';
 
 // Convert the game instance to a JSON object
 export class EventDispatcher extends EventEmitter {
@@ -56,8 +55,8 @@ export class EventDispatcher extends EventEmitter {
     }
 
     private isAllowedEvent(eventType: string): boolean {
-        return Object.values(game_instance.InstanceCommandEnum).includes(eventType) ||
-               Object.values(game_instance.InstanceStateEnum).includes(eventType);
+        // TODO: implement a list of allowed events
+        return true;
     }
 
     getEventLog(): { [key: string]: number } {
