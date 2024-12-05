@@ -5,6 +5,7 @@ interface SDKConfig {
     globalNamespace?: string;
     apiUrl?: string;
     twitch?: object;
+    workerUrl?: string;
 }
 declare class GameSDK {
     private webSocketManager;
@@ -30,7 +31,7 @@ declare class GameSDK {
             getEventLog: () => any;
         };
     };
-    init(sdkConfig: SDKConfig, shadowRoot?: ShadowRoot | null): void;
+    init(sdkConfig: SDKConfig): void;
     connect(token: string): Promise<void>;
     disconnect(): void;
 }

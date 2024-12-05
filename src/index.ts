@@ -11,6 +11,7 @@ interface SDKConfig {
     globalNamespace?: string;
     apiUrl?: string;
     twitch?: object;
+    workerUrl?: string;
 }
 
 class GameSDK {
@@ -57,8 +58,8 @@ class GameSDK {
         }
     };
 
-    public init(sdkConfig: SDKConfig, shadowRoot: ShadowRoot | null = null) {
-        this.eventDispatcher = new EventDispatcher();
+    public init(sdkConfig: SDKConfig) {
+        this.eventDispatcher = new EventDispatcher(sdkConfig.workerUrl);
         this.webSocketManager = new WebSocketManager(sdkConfig.socketUrl);
         this.gameChannel = new SocketGameChannel(this.webSocketManager);
         this.globalChannel = new SocketGlobalChannel(this.webSocketManager);
