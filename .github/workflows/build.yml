@@ -64,7 +64,7 @@ jobs:
 
           echo "Committing the new version and pushing to GitHub..."
           git pull
-          git add dist package.json package-lock.json
+          git add dist package.json package-lock.json -f
           
           echo "Committing the staged changes..."
           git commit -m "chore: prepare release" || true
