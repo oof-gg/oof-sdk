@@ -1,12 +1,12 @@
 /// <reference types="node" />
 import { EventEmitter } from 'events';
 export declare class EventDispatcher extends EventEmitter {
-    private shadowRoot;
+    private workerUrl;
     private eventLog;
     private worker;
     private port;
     private eventListeners;
-    constructor(shadowRoot?: ShadowRoot | null);
+    constructor(workerUrl?: string);
     private handleWorkerMessage;
     emitEvent(namespace: string, eventType: string, data: any): void;
     subscribe(namespace: string, eventType: string, callback: (data: any) => void): void;

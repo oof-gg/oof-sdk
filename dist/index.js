@@ -46,7 +46,7 @@ class GameSDK {
         };
     }
     init(sdkConfig, shadowRoot = null) {
-        this.eventDispatcher = new EventDispatcher_1.EventDispatcher(shadowRoot);
+        this.eventDispatcher = new EventDispatcher_1.EventDispatcher();
         this.webSocketManager = new WebSocketManager_1.WebSocketManager(sdkConfig.socketUrl);
         this.gameChannel = new SocketGameChannel_1.SocketGameChannel(this.webSocketManager);
         this.globalChannel = new SocketGlobalChannel_1.SocketGlobalChannel(this.webSocketManager);
