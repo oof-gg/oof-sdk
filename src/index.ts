@@ -2,6 +2,7 @@ import { SocketGameChannel } from './connections/SocketGameChannel';
 import { SocketGlobalChannel } from './connections/SocketGlobalChannel';
 import { EventDispatcher } from './events/EventDispatcher';
 import { WebSocketManager } from './connections/WebSocketManager';
+import GameInterface from './utils/game';
 import { config } from './config/config';
 
 interface SDKConfig {
@@ -23,18 +24,18 @@ class GameSDK {
 
     public events = {
         local: {
-            on: (eventType: any, callback: (data: any) => void, context?: EventTarget) => {
-                this.eventDispatcher.subscribe('local', eventType, callback, context);
+            on: (eventType: any, callback: (data: any) => void) => {
+                this.eventDispatcher.subscribe('local', eventType, callback);
             },
             emit: (eventType: any, payload: any, context?: EventTarget) => {
-                this.eventDispatcher.emitEvent('local', eventType, payload, context);
+                this.eventDispatcher.emitEvent('local', eventType, payload);
             }
         },
         web: {
             game: {
-                on: (eventType: string, callback: (data: any) => void, context?: EventTarget) => {
+                on: (eventType: string, callback: (data: any) => void) => {
                     this.gameChannel.onEvent(eventType, (data) => {
-                        this.eventDispatcher.emitEvent('websocket.game', eventType, data, context);
+                        this.eventDispatcher.emitEvent('websocket.game', eventType, data);
                         callback(data);
                     });
                 },
@@ -43,9 +44,9 @@ class GameSDK {
                 }
             },
             global: {
-                on: (eventType: string, callback: (data: any) => void, context?: EventTarget) => {
+                on: (eventType: string, callback: (data: any) => void) => {
                     this.globalChannel.subscribeToGlobalEvent(eventType, (data) => {
-                        this.eventDispatcher.emitEvent('websocket.global', eventType, data, context);
+                        this.eventDispatcher.emitEvent('websocket.global', eventType, data);
                         callback(data);
                     });
                 }
@@ -82,4 +83,4 @@ class GameSDK {
     }
 }
 
-export { GameSDK, SDKConfig };
+export { GameSDK, SDKConfig, GameInterface };

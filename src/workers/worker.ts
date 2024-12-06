@@ -6,6 +6,7 @@ self.addEventListener('connect', (event: MessageEvent) => {
 
     connections.push(port);
     console.log('[SharedWorker] New client connected. Total clients:', connections.length);
+    
     port.onmessage = function (event) {
         console.log('[SharedWorker] Worker received message:', event.data);
         connections.forEach((conn) => {

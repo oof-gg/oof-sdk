@@ -10,18 +10,18 @@ class GameSDK {
         this.authenticated = false;
         this.events = {
             local: {
-                on: (eventType, callback, context) => {
-                    this.eventDispatcher.subscribe('local', eventType, callback, context);
+                on: (eventType, callback) => {
+                    this.eventDispatcher.subscribe('local', eventType, callback);
                 },
                 emit: (eventType, payload, context) => {
-                    this.eventDispatcher.emitEvent('local', eventType, payload, context);
+                    this.eventDispatcher.emitEvent('local', eventType, payload);
                 }
             },
             web: {
                 game: {
-                    on: (eventType, callback, context) => {
+                    on: (eventType, callback) => {
                         this.gameChannel.onEvent(eventType, (data) => {
-                            this.eventDispatcher.emitEvent('websocket.game', eventType, data, context);
+                            this.eventDispatcher.emitEvent('websocket.game', eventType, data);
                             callback(data);
                         });
                     },
@@ -30,9 +30,9 @@ class GameSDK {
                     }
                 },
                 global: {
-                    on: (eventType, callback, context) => {
+                    on: (eventType, callback) => {
                         this.globalChannel.subscribeToGlobalEvent(eventType, (data) => {
-                            this.eventDispatcher.emitEvent('websocket.global', eventType, data, context);
+                            this.eventDispatcher.emitEvent('websocket.global', eventType, data);
                             callback(data);
                         });
                     }

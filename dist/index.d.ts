@@ -15,16 +15,16 @@ declare class GameSDK {
     private eventDispatcher;
     events: {
         local: {
-            on: (eventType: any, callback: (data: any) => void, context?: EventTarget) => void;
+            on: (eventType: any, callback: (data: any) => void) => void;
             emit: (eventType: any, payload: any, context?: EventTarget) => void;
         };
         web: {
             game: {
-                on: (eventType: string, callback: (data: any) => void, context?: EventTarget) => void;
+                on: (eventType: string, callback: (data: any) => void) => void;
                 emit: (eventType: string, payload: any) => void;
             };
             global: {
-                on: (eventType: string, callback: (data: any) => void, context?: EventTarget) => void;
+                on: (eventType: string, callback: (data: any) => void) => void;
             };
         };
         log: {

@@ -15,14 +15,6 @@ export class EventDispatcher extends EventEmitter {
             console.log('[EventDispatcher] SharedWorker is supported', workerUrl);
             this.worker = new SharedWorker(workerUrl, 'oof-shared-worker');
             this.port = this.worker.port
-            this.port.onmessage = this.handleWorkerMessage.bind(this);
-        }
-    }
-
-    private handleWorkerMessage(event: MessageEvent): void {
-        const { namespace, eventType, data } = event.data;
-        if (this.isAllowedEvent(eventType)) {
-            this.emitEvent(namespace, eventType, data);
         }
     }
 
