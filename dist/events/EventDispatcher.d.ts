@@ -7,7 +7,6 @@ export declare class EventDispatcher extends EventEmitter {
     private port;
     private eventListeners;
     constructor(workerUrl?: string);
-    private handleWorkerMessage;
     emitEvent(namespace: string, eventType: string, data: any): void;
     subscribe(namespace: string, eventType: string, callback: (data: any) => void): void;
     unsubscribe(namespace: string, eventType: string): void;
