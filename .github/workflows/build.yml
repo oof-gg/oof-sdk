@@ -113,15 +113,9 @@ jobs:
           PATCH=$(echo "$VERSION_NUMBER" | cut -d. -f3)
 
           # Increment the patch version (or change logic for major/minor if needed)
-          NEW_TAG="v$MAJOR.$MINOR.$((PATCH + 1))"
+          NEW_TAG="v$MAJOR.$MINOR.$((PATCH))"
           
           echo "new_tag=$NEW_TAG" >> $GITHUB_ENV
-
-      - name: Create a new tag
-        run: |
-          NEW_TAG=${{ env.new_tag }}
-          git tag "$NEW_TAG"
-          git push origin "$NEW_TAG"
 
       - name: Generate changelog
         id: changelog
