@@ -2,6 +2,7 @@ import { SocketGameChannel } from './connections/SocketGameChannel';
 import { SocketGlobalChannel } from './connections/SocketGlobalChannel';
 import { EventDispatcher } from './events/EventDispatcher';
 import { WebSocketManager } from './connections/WebSocketManager';
+import GameInterface from './utils/game';
 import { config } from './config/config';
 
 interface SDKConfig {
@@ -82,4 +83,4 @@ class GameSDK {
     }
 }
 
-export { GameSDK, SDKConfig };
+export { GameSDK, SDKConfig, GameInterface };

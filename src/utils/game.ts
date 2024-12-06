@@ -1,15 +1,14 @@
 // Game Class to use as "implements"
 
-export class Game {
-  constructor() {
-    console.log('Game class created');
-  }
+export default interface GameInterface {
 
-  start() {
-    console.log('Game started');
-  }
+  // Initialization
+  initConfig(config: any): void;
 
-  end() {
-    console.log('Game ended');
-  }
+  // Lifecycle
+  load(): Promise<void>;
+  start(): void;
+  pause(): void;
+  resume(): void;
+  unload(): Promise<void>;
 }
