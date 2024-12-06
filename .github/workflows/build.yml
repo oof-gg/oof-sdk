@@ -68,11 +68,6 @@ jobs:
           
           echo "Committing the staged changes..."
           git commit -m "chore: prepare release" || true
-
-          echo "Bumping the version (choose one of patch, minor, or major)"
-          NEW_VERSION=$(npm version patch -m "ci: bump version to %s")
-
-          git push --follow-tags
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

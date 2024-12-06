@@ -1,3 +1,4 @@
+import GameInterface from './utils/game';
 interface SDKConfig {
     authUrl: string;
     socketUrl: string;
@@ -35,4 +36,4 @@ declare class GameSDK {
     connect(token: string): Promise<void>;
     disconnect(): void;
 }
-export { GameSDK, SDKConfig };
+export { GameSDK, SDKConfig, GameInterface };
