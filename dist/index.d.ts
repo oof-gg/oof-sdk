@@ -18,6 +18,7 @@ declare class GameSDK {
         local: {
             on: (eventType: any, callback: (data: any) => void) => void;
             emit: (eventType: any, payload: any, context?: EventTarget) => void;
+            off: (eventType: any) => void;
         };
         web: {
             game: {
