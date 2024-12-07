@@ -123,12 +123,11 @@ jobs:
           LATEST_TAG=${{ env.latest_tag }}
           NEW_TAG=${{ env.new_tag }}
           
-          # Generate the changelog between the last and new tag
-          if [ "$LATEST_TAG" != "v0.0.0" ]; then
-            git log "$LATEST_TAG".."$NEW_TAG" --oneline > changelog.txt
-          else
-            git log --oneline > changelog.txt  # First release case
-          fi
+          # Generate the changelog between the last commit on dev and the last commit on main
+          LAST_DEV_COMMIT=$(git rev-parse origin/dev)
+          LAST_MAIN_COMMIT=$(git rev-parse origin/main)
+          
+          git log "$LAST_DEV_COMMIT".."$LAST_MAIN_COMMIT" --oneline > changelog.txt
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
