@@ -29,6 +29,9 @@ class GameSDK {
             },
             emit: (eventType: any, payload: any, context?: EventTarget) => {
                 this.eventDispatcher.emitEvent('local', eventType, payload);
+            },
+            off: (eventType: any) => {
+                this.eventDispatcher.unsubscribe('local', eventType);
             }
         },
         web: {
