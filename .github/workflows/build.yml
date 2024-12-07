@@ -114,7 +114,7 @@ jobs:
           PATCH=$(echo "$VERSION_NUMBER" | cut -d. -f3)
 
           # Increment the patch version (or change logic for major/minor if needed)
-          NEW_TAG="v$MAJOR.$MINOR.$((PATCH))"
+          NEW_TAG="v$MAJOR.$MINOR.$((PATCH + 1))"
           
           echo "new_tag=$NEW_TAG" >> $GITHUB_ENV
 
