@@ -93,12 +93,13 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Get the latest tag
-        id: get_latest_tag
+      - name: Get the latest and previous tags
+        id: get_tags
         run: |
-          # Get the latest tag by date
           LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1) 2>/dev/null || echo "v0.0.0")
+          PREVIOUS_TAG=$(git describe --tags $(git rev-list --tags --skip=1 --max-count=1) 2>/dev/null || echo "v0.0.0")
           echo "latest_tag=$LATEST_TAG" >> $GITHUB_ENV
+          echo "previous_tag=$PREVIOUS_TAG" >> $GITHUB_ENV
 
       - name: Calculate the next tag version
         id: calc_new_version
@@ -120,14 +121,10 @@ jobs:
       - name: Generate changelog
         id: changelog
         run: |
+          git fetch origin dev:dev
+          PREVIOUS_TAG=${{ env.previous_tag }}
           LATEST_TAG=${{ env.latest_tag }}
-          NEW_TAG=${{ env.new_tag }}
-          
-          # Generate the changelog between the last commit on dev and the last commit on main
-          LAST_DEV_COMMIT=$(git rev-parse origin/dev)
-          LAST_MAIN_COMMIT=$(git rev-parse origin/main)
-          
-          git log "$LAST_DEV_COMMIT".."$LAST_MAIN_COMMIT" --oneline > changelog.txt
+          git log "$PREVIOUS_TAG".."dev" --pretty=format:"* %s (%h)" > changelog.txt
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
