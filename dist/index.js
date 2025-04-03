@@ -5,9 +5,11 @@ const SocketGameChannel_1 = require("./connections/SocketGameChannel");
 const SocketGlobalChannel_1 = require("./connections/SocketGlobalChannel");
 const EventDispatcher_1 = require("./events/EventDispatcher");
 const WebSocketManager_1 = require("./connections/WebSocketManager");
+const Game_1 = require("./api/Game");
 class GameSDK {
     constructor() {
         this.authenticated = false;
+        this.api = {};
         this.events = {
             local: {
                 on: (eventType, callback) => {
@@ -49,16 +51,18 @@ class GameSDK {
         };
     }
     init(sdkConfig) {
+        this.token = sdkConfig.token || '';
         this.eventDispatcher = new EventDispatcher_1.EventDispatcher(sdkConfig.workerUrl);
         this.webSocketManager = new WebSocketManager_1.WebSocketManager(sdkConfig.socketUrl);
         this.gameChannel = new SocketGameChannel_1.SocketGameChannel(this.webSocketManager);
         this.globalChannel = new SocketGlobalChannel_1.SocketGlobalChannel(this.webSocketManager);
+        this.api.game = new Game_1.default(sdkConfig.apiUrl, this.token);
     }
     async connect(token) {
         try {
             await this.gameChannel.connect(token);
             this.authenticated = true;
-            console.log('GameSDK connected successfully.');
+            console.log('oof.gg SDK connected successfully.');
         }
         catch (error) {
             console.error('Failed to connect GameSDK:', error);

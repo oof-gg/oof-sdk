@@ -1,8 +1,8 @@
 import GameInterface from './utils/game';
 interface SDKConfig {
-    authUrl: string;
     socketUrl: string;
     playerNamespace?: string;
+    token?: string;
     globalNamespace?: string;
     apiUrl?: string;
     twitch?: object;
@@ -14,6 +14,8 @@ declare class GameSDK {
     private globalChannel;
     private authenticated;
     private eventDispatcher;
+    private token;
+    api: any;
     events: {
         local: {
             on: (eventType: any, callback: (data: any) => void) => void;

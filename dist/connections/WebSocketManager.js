@@ -1,24 +1,126 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.WebSocketManager = void 0;
-const socket_io_client_1 = require("socket.io-client");
 class WebSocketManager {
-    constructor(url) {
-        this.url = url;
-        this.socket = (0, socket_io_client_1.io)(this.url);
+    constructor(baseUrl) {
+        this.socket = null;
+        this.eventHandlers = new Map();
+        this.reconnectAttempts = 0;
+        this.maxReconnectAttempts = 5;
+        this.reconnectDelay = 1000;
+        this.token = '';
+        this.url = baseUrl;
     }
     async connect(token) {
-        this.socket.auth = { token };
-        this.socket.connect();
+        this.token = token;
+        return new Promise((resolve, reject) => {
+            try {
+                // Use token as query parameter for authentication
+                const url = `${this.url}?token=${encodeURIComponent(token)}`;
+                this.socket = new WebSocket(url);
+                this.socket.onopen = () => {
+                    console.log('WebSocket connection established');
+                    this.reconnectAttempts = 0;
+                    resolve();
+                };
+                this.socket.onmessage = (event) => {
+                    try {
+                        const message = JSON.parse(event.data);
+                        this.handleMessage(message);
+                    }
+                    catch (e) {
+                        console.error('Error parsing WebSocket message:', e);
+                    }
+                };
+                this.socket.onerror = (error) => {
+                    console.error('WebSocket error:', error);
+                    reject(error);
+                };
+                this.socket.onclose = (event) => {
+                    console.log(`WebSocket closed: ${event.code} ${event.reason}`);
+                    // Attempt to reconnect if not a clean close
+                    if (!event.wasClean && this.reconnectAttempts < this.maxReconnectAttempts) {
+                        this.reconnectAttempts++;
+                        const delay = this.reconnectDelay * this.reconnectAttempts;
+                        console.log(`Attempting to reconnect in ${delay}ms...`);
+                        setTimeout(() => {
+                            this.connect(this.token).catch(e => {
+                                console.error('Reconnection failed:', e);
+                            });
+                        }, delay);
+                    }
+                };
+            }
+            catch (error) {
+                reject(error);
+            }
+        });
     }
-    sendEvent(eventType, payload) {
-        this.socket.emit(eventType, payload);
+    subscribeToInstance(instanceId) {
+        if (!this.socket || this.socket.readyState !== WebSocket.OPEN) {
+            throw new Error('WebSocket is not connected');
+        }
+        const message = {
+            type: 'subscribe',
+            instance_id: instanceId
+        };
+        this.socket.send(JSON.stringify(message));
+    }
+    sendMessage(message) {
+        if (!this.socket || this.socket.readyState !== WebSocket.OPEN) {
+            throw new Error('WebSocket is not connected');
+        }
+        this.socket.send(JSON.stringify(message));
     }
     onEvent(eventType, callback) {
-        this.socket.on(eventType, callback);
+        if (!this.eventHandlers.has(eventType)) {
+            this.eventHandlers.set(eventType, []);
+        }
+        this.eventHandlers.get(eventType)?.push(callback);
+    }
+    /**
+     * Send a custom event to the server
+     * @param eventType The type of event to send
+     * @param data The data to include with the event
+     * @param instanceId Optional instance ID if this event relates to a specific instance
+     */
+    sendEvent(eventType, data, instanceId) {
+        if (!this.socket || this.socket.readyState !== WebSocket.OPEN) {
+            throw new Error('WebSocket is not connected');
+        }
+        const message = {
+            type: eventType,
+            data: data
+        };
+        if (instanceId) {
+            message.instance_id = instanceId;
+        }
+        this.socket.send(JSON.stringify(message));
+    }
+    handleMessage(message) {
+        // Trigger callbacks for this message type
+        const handlers = this.eventHandlers.get(message.type) || [];
+        for (const handler of handlers) {
+            try {
+                handler(message.data);
+            }
+            catch (e) {
+                console.error(`Error in handler for event type ${message.type}:`, e);
+            }
+        }
+        // Also handle specific message types
+        if (message.type === 'error' && message.error) {
+            console.error('Server error:', message.error);
+        }
     }
     disconnect() {
-        this.socket.disconnect();
+        if (this.socket) {
+            this.socket.close();
+            this.socket = null;
+        }
+    }
+    isConnected() {
+        return this.socket !== null && this.socket.readyState === WebSocket.OPEN;
     }
 }
 exports.WebSocketManager = WebSocketManager;
