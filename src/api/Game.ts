@@ -39,6 +39,7 @@ export class GameAPI {
 
         // If a session exists, attach it to the request if your protobuf definition supports it
         if (currentSessionId && typeof (request as any).setSessionId === 'function') {
+            console.log('[SDK] Setting sessionId:', currentSessionId);
             (request as any).setSessionId(currentSessionId);
         }
 

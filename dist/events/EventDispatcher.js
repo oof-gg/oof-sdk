@@ -35,7 +35,7 @@ class EventDispatcher extends events_1.EventEmitter {
             }
         }
         else {
-            console.warn(`Event type "${eventType}" is not allowed.`);
+            console.warn(`[EventDispatcher] Event type "${eventType}" is not allowed.`);
         }
     }
     subscribe(namespace, eventType, callback) {

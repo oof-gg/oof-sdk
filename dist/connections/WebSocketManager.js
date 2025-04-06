@@ -11,15 +11,20 @@ class WebSocketManager {
         this.token = '';
         this.url = baseUrl;
     }
-    async connect(token) {
+    async connect(token, sessionId) {
         this.token = token;
         return new Promise((resolve, reject) => {
             try {
                 // Use token as query parameter for authentication
-                const url = `${this.url}?token=${encodeURIComponent(token)}`;
+                let _sessionId = '';
+                if (sessionId) {
+                    console.log(`[SDK] Setting "sessionId" as ${sessionId}`);
+                    _sessionId = `/${sessionId}`;
+                }
+                const url = `${this.url}${_sessionId}?token=${encodeURIComponent(token)}`;
                 this.socket = new WebSocket(url);
                 this.socket.onopen = () => {
-                    console.log('WebSocket connection established');
+                    console.log('[SDK] WebSocket connection established');
                     this.reconnectAttempts = 0;
                     resolve();
                 };
@@ -29,23 +34,23 @@ class WebSocketManager {
                         this.handleMessage(message);
                     }
                     catch (e) {
-                        console.error('Error parsing WebSocket message:', e);
+                        console.error('[SDK] Error parsing WebSocket message:', e);
                     }
                 };
                 this.socket.onerror = (error) => {
-                    console.error('WebSocket error:', error);
+                    console.error('[SDK] WebSocket error:', error);
                     reject(error);
                 };
                 this.socket.onclose = (event) => {
-                    console.log(`WebSocket closed: ${event.code} ${event.reason}`);
+                    console.log(`[SDK] WebSocket closed: ${event.code} ${event.reason}`);
                     // Attempt to reconnect if not a clean close
                     if (!event.wasClean && this.reconnectAttempts < this.maxReconnectAttempts) {
                         this.reconnectAttempts++;
                         const delay = this.reconnectDelay * this.reconnectAttempts;
-                        console.log(`Attempting to reconnect in ${delay}ms...`);
+                        console.log(`[SDK] Attempting to reconnect in ${delay}ms...`);
                         setTimeout(() => {
-                            this.connect(this.token).catch(e => {
-                                console.error('Reconnection failed:', e);
+                            this.connect(this.token, sessionId).catch(e => {
+                                console.error('[SDK] Reconnection failed:', e);
                             });
                         }, delay);
                     }
@@ -58,7 +63,7 @@ class WebSocketManager {
     }
     subscribeToInstance(instanceId) {
         if (!this.socket || this.socket.readyState !== WebSocket.OPEN) {
-            throw new Error('WebSocket is not connected');
+            throw new Error('[SDK] WebSocket is not connected');
         }
         const message = {
             type: 'subscribe',
@@ -68,7 +73,7 @@ class WebSocketManager {
     }
     sendMessage(message) {
         if (!this.socket || this.socket.readyState !== WebSocket.OPEN) {
-            throw new Error('WebSocket is not connected');
+            throw new Error('[SDK] WebSocket is not connected');
         }
         this.socket.send(JSON.stringify(message));
     }
@@ -86,7 +91,7 @@ class WebSocketManager {
      */
     sendEvent(eventType, data, instanceId) {
         if (!this.socket || this.socket.readyState !== WebSocket.OPEN) {
-            throw new Error('WebSocket is not connected');
+            throw new Error('[SDK] WebSocket is not connected');
         }
         const message = {
             type: eventType,
@@ -105,12 +110,12 @@ class WebSocketManager {
                 handler(message.data);
             }
             catch (e) {
-                console.error(`Error in handler for event type ${message.type}:`, e);
+                console.error(`[SDK] Error in handler for event type ${message.type}:`, e);
             }
         }
         // Also handle specific message types
         if (message.type === 'error' && message.error) {
-            console.error('Server error:', message.error);
+            console.error('[SDK] Server error:', message.error);
         }
     }
     disconnect() {

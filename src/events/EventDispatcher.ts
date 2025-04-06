@@ -33,7 +33,7 @@ export class EventDispatcher extends EventEmitter {
                 this.emit(key, data);
             }
         } else {
-            console.warn(`Event type "${eventType}" is not allowed.`);
+            console.warn(`[EventDispatcher] Event type "${eventType}" is not allowed.`);
         }
     }
 

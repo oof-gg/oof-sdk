@@ -13,7 +13,7 @@ export declare class WebSocketManager {
     private url;
     private token;
     constructor(baseUrl: string);
-    connect(token: string): Promise<void>;
+    connect(token: string, sessionId: string): Promise<void>;
     subscribeToInstance(instanceId: string): void;
     sendMessage(message: WebSocketMessage): void;
     onEvent(eventType: string, callback: (data: any) => void): void;

@@ -36,7 +36,7 @@ declare class GameSDK {
         };
     };
     init(sdkConfig: SDKConfig): void;
-    connect(token: string): Promise<void>;
+    connect(token: string, sessionId: string): Promise<void>;
     disconnect(): void;
 }
 export { GameSDK, SDKConfig, GameInterface };

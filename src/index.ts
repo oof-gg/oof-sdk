@@ -73,13 +73,13 @@ class GameSDK {
         this.api.game = new GameAPI(sdkConfig.apiUrl, this.token);
     }
 
-    public async connect(token: string): Promise<void> {
+    public async connect(token: string, sessionId: string): Promise<void> {
         try {
-            await this.gameChannel.connect(token);
+            await this.gameChannel.connect(token, sessionId);
             this.authenticated = true;
-            console.log('oof.gg SDK connected successfully.');
+            console.log('[SDK] oof.gg SDK connected successfully.');
         } catch (error) {
-            console.error('Failed to connect GameSDK:', error);
+            console.error('[SDK] Failed to connect GameSDK:', error);
             throw error;
         }
     }
