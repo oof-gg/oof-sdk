@@ -8,12 +8,12 @@ export class SocketGameChannel {
         this.webSocketManager = webSocketManager;
     }
 
-    public async connect(token: string): Promise<void> {
+    public async connect(token: string, sessionId: string): Promise<void> {
         try {
-            await this.webSocketManager.connect(token);
-            console.log('Connected to game WebSocket channel.');
+            await this.webSocketManager.connect(token, sessionId);
+            console.log('[SDK] Connected to game WebSocket channel.');
         } catch (error) {
-            console.error('Failed to connect to game WebSocket channel:', error);
+            console.error('[SDK] Failed to connect to game WebSocket channel:', error);
             throw error;
         }
     }

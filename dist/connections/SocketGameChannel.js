@@ -6,13 +6,13 @@ class SocketGameChannel {
         this.namespace = '/game';
         this.webSocketManager = webSocketManager;
     }
-    async connect(token) {
+    async connect(token, sessionId) {
         try {
-            await this.webSocketManager.connect(token);
-            console.log('Connected to game WebSocket channel.');
+            await this.webSocketManager.connect(token, sessionId);
+            console.log('[SDK] Connected to game WebSocket channel.');
         }
         catch (error) {
-            console.error('Failed to connect to game WebSocket channel:', error);
+            console.error('[SDK] Failed to connect to game WebSocket channel:', error);
             throw error;
         }
     }

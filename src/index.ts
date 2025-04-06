@@ -2,13 +2,13 @@ import { SocketGameChannel } from './connections/SocketGameChannel';
 import { SocketGlobalChannel } from './connections/SocketGlobalChannel';
 import { EventDispatcher } from './events/EventDispatcher';
 import { WebSocketManager } from './connections/WebSocketManager';
+import GameAPI from './api/Game';
 import GameInterface from './utils/game';
-import { config } from './config/config';
 
 interface SDKConfig {
-    authUrl: string;
     socketUrl: string;
     playerNamespace?: string;
+    token?: string;
     globalNamespace?: string;
     apiUrl?: string;
     twitch?: object;
@@ -21,6 +21,8 @@ class GameSDK {
     private globalChannel: SocketGlobalChannel;
     private authenticated: boolean = false;
     private eventDispatcher: any;
+    private token: string;
+    public api: any = {};
 
     public events = {
         local: {
@@ -63,19 +65,21 @@ class GameSDK {
     };
 
     public init(sdkConfig: SDKConfig) {
+        this.token = sdkConfig.token || '';
         this.eventDispatcher = new EventDispatcher(sdkConfig.workerUrl);
         this.webSocketManager = new WebSocketManager(sdkConfig.socketUrl);
         this.gameChannel = new SocketGameChannel(this.webSocketManager);
         this.globalChannel = new SocketGlobalChannel(this.webSocketManager);
+        this.api.game = new GameAPI(sdkConfig.apiUrl, this.token);
     }
 
-    public async connect(token: string): Promise<void> {
+    public async connect(token: string, sessionId: string): Promise<void> {
         try {
-            await this.gameChannel.connect(token);
+            await this.gameChannel.connect(token, sessionId);
             this.authenticated = true;
-            console.log('GameSDK connected successfully.');
+            console.log('[SDK] oof.gg SDK connected successfully.');
         } catch (error) {
-            console.error('Failed to connect GameSDK:', error);
+            console.error('[SDK] Failed to connect GameSDK:', error);
             throw error;
         }
     }
