@@ -2,7 +2,6 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GameSDK = void 0;
 const SocketGameChannel_1 = require("./connections/SocketGameChannel");
-const SocketGlobalChannel_1 = require("./connections/SocketGlobalChannel");
 const EventDispatcher_1 = require("./events/EventDispatcher");
 const WebSocketManager_1 = require("./connections/WebSocketManager");
 const Game_1 = require("./api/Game");
@@ -34,14 +33,6 @@ class GameSDK {
                         this.gameChannel.sendEvent(eventType, payload);
                     }
                 },
-                global: {
-                    on: (eventType, callback) => {
-                        this.globalChannel.subscribeToGlobalEvent(eventType, (data) => {
-                            this.eventDispatcher.emitEvent('websocket.global', eventType, data);
-                            callback(data);
-                        });
-                    }
-                }
             },
             log: {
                 getEventLog: () => {
@@ -55,7 +46,6 @@ class GameSDK {
         this.eventDispatcher = new EventDispatcher_1.EventDispatcher(sdkConfig.workerUrl);
         this.webSocketManager = new WebSocketManager_1.WebSocketManager(sdkConfig.socketUrl);
         this.gameChannel = new SocketGameChannel_1.SocketGameChannel(this.webSocketManager);
-        this.globalChannel = new SocketGlobalChannel_1.SocketGlobalChannel(this.webSocketManager);
         this.api.game = new Game_1.default(sdkConfig.apiUrl, this.token);
     }
     async connect(token, sessionId) {

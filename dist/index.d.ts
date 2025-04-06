@@ -11,7 +11,6 @@ interface SDKConfig {
 declare class GameSDK {
     private webSocketManager;
     private gameChannel;
-    private globalChannel;
     private authenticated;
     private eventDispatcher;
     private token;
@@ -26,9 +25,6 @@ declare class GameSDK {
             game: {
                 on: (eventType: string, callback: (data: any) => void) => void;
                 emit: (eventType: string, payload: any) => void;
-            };
-            global: {
-                on: (eventType: string, callback: (data: any) => void) => void;
             };
         };
         log: {

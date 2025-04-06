@@ -1,5 +1,4 @@
 import { SocketGameChannel } from './connections/SocketGameChannel';
-import { SocketGlobalChannel } from './connections/SocketGlobalChannel';
 import { EventDispatcher } from './events/EventDispatcher';
 import { WebSocketManager } from './connections/WebSocketManager';
 import GameAPI from './api/Game';
@@ -18,7 +17,6 @@ interface SDKConfig {
 class GameSDK {
     private webSocketManager: WebSocketManager;
     private gameChannel: SocketGameChannel;
-    private globalChannel: SocketGlobalChannel;
     private authenticated: boolean = false;
     private eventDispatcher: any;
     private token: string;
@@ -48,14 +46,6 @@ class GameSDK {
                     this.gameChannel.sendEvent(eventType, payload);
                 }
             },
-            global: {
-                on: (eventType: string, callback: (data: any) => void) => {
-                    this.globalChannel.subscribeToGlobalEvent(eventType, (data) => {
-                        this.eventDispatcher.emitEvent('websocket.global', eventType, data);
-                        callback(data);
-                    });
-                }
-            }
         },
         log: {
             getEventLog: () => {
@@ -69,7 +59,6 @@ class GameSDK {
         this.eventDispatcher = new EventDispatcher(sdkConfig.workerUrl);
         this.webSocketManager = new WebSocketManager(sdkConfig.socketUrl);
         this.gameChannel = new SocketGameChannel(this.webSocketManager);
-        this.globalChannel = new SocketGlobalChannel(this.webSocketManager);
         this.api.game = new GameAPI(sdkConfig.apiUrl, this.token);
     }
 

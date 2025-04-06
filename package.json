@@ -19,7 +19,6 @@
     "test": "npx jest --config jest.config.js"
   },
   "dependencies": {
-    "@oof.gg/protobuf-ts": "^1.0.36",
     "@oof.gg/protobuf-ts-web": "^1.0.103",
     "@types/node": "^16.18.119",
     "axios": "^1.7.7",
