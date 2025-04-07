@@ -1,6 +1,6 @@
 {
   "name": "@oof.gg/sdk",
-  "version": "0.1.19",
+  "version": "0.1.20",
   "author": "Brian S. <brian@oof.gg> (https://www.oof.gg/)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
