@@ -19,7 +19,7 @@ class GameAPI {
     }
     // Sets the sessionId in local storage.
     async setSessionId(sessionId) {
-        return await this.storageService.setItem(this.sessionKey, sessionId);
+        await this.storageService.setItem(this.sessionKey, sessionId);
     }
     async joinGame(userId, gameId, sessionId) {
         const request = new protobuf_ts_web_1.v1_api_game_join_leave_pb.JoinLeaveGame();

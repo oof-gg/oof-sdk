@@ -23,7 +23,7 @@ export declare class WebSocketManager {
      * @param data The data to include with the event
      * @param instanceId Optional instance ID if this event relates to a specific instance
      */
-    sendEvent(eventType: string, data: any, instanceId?: string): void;
+    sendEvent(eventType: string, data: any): void;
     private handleMessage;
     disconnect(): void;
     isConnected(): boolean;
