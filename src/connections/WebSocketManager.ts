@@ -110,7 +110,7 @@ export class WebSocketManager {
      * @param data The data to include with the event
      * @param instanceId Optional instance ID if this event relates to a specific instance
      */
-    public sendEvent(eventType: string, data: any, instanceId?: string): void {
+    public sendEvent(eventType: string, data: any): void {
         if (!this.socket || this.socket.readyState !== WebSocket.OPEN) {
             throw new Error('[SDK] WebSocket is not connected');
         }
@@ -119,10 +119,6 @@ export class WebSocketManager {
             type: eventType,
             data: data
         };
-
-        if (instanceId) {
-            message.instance_id = instanceId;
-        }
 
         this.socket.send(JSON.stringify(message));
     }

@@ -25,7 +25,7 @@ export class GameAPI {
 
     // Sets the sessionId in local storage.
     private async setSessionId(sessionId: string): Promise<void> {
-        return await this.storageService.setItem(this.sessionKey, sessionId);
+        await this.storageService.setItem(this.sessionKey, sessionId);
     }
 
     public async joinGame(userId: string, gameId: string, sessionId?: string): Promise<any> {
