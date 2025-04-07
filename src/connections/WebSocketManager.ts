@@ -6,6 +6,7 @@ export interface WebSocketMessage {
 }
   
 export class WebSocketManager {
+    private static instance: WebSocketManager | null = null;
     private socket: WebSocket | null = null;
     private eventHandlers: Map<string, ((data: any) => void)[]> = new Map();
     private reconnectAttempts = 0;
@@ -73,6 +74,14 @@ export class WebSocketManager {
             reject(error);
         }
         });
+    }
+
+    // Singleton pattern to ensure only one instance of WebSocketManager
+    public static getInstance(baseUrl: string): WebSocketManager {
+        if (!this.instance) {
+        this.instance = new WebSocketManager(baseUrl);
+        }
+        return this.instance;
     }
 
     public subscribeToInstance(instanceId: string): void {

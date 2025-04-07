@@ -57,7 +57,9 @@ class GameSDK {
     public init(sdkConfig: SDKConfig) {
         this.token = sdkConfig.token || '';
         this.eventDispatcher = new EventDispatcher(sdkConfig.workerUrl);
-        this.webSocketManager = new WebSocketManager(sdkConfig.socketUrl);
+
+        // Get the singleton instance of WebSocketManager
+        this.webSocketManager = WebSocketManager.getInstance(sdkConfig.socketUrl);
         this.gameChannel = new SocketGameChannel(this.webSocketManager);
         this.api.game = new GameAPI(sdkConfig.apiUrl, this.token);
     }
