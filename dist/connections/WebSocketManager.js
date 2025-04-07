@@ -61,6 +61,13 @@ class WebSocketManager {
             }
         });
     }
+    // Singleton pattern to ensure only one instance of WebSocketManager
+    static getInstance(baseUrl) {
+        if (!this.instance) {
+            this.instance = new WebSocketManager(baseUrl);
+        }
+        return this.instance;
+    }
     subscribeToInstance(instanceId) {
         if (!this.socket || this.socket.readyState !== WebSocket.OPEN) {
             throw new Error('[SDK] WebSocket is not connected');
@@ -126,3 +133,4 @@ class WebSocketManager {
     }
 }
 exports.WebSocketManager = WebSocketManager;
+WebSocketManager.instance = null;
