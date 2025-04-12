@@ -138,7 +138,8 @@ export class WebSocketManager {
         
         for (const handler of handlers) {
         try {
-            handler(message.data);
+            // send the full message to the handler
+            handler(message);
         } catch (e) {
             console.error(`[SDK] Error in handler for event type ${message.type}:`, e);
         }
