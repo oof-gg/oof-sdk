@@ -5,6 +5,7 @@ export interface WebSocketMessage {
     error?: string;
 }
 export declare class WebSocketManager {
+    private static instance;
     private socket;
     private eventHandlers;
     private reconnectAttempts;
@@ -14,6 +15,7 @@ export declare class WebSocketManager {
     private token;
     constructor(baseUrl: string);
     connect(token: string, sessionId: string): Promise<void>;
+    static getInstance(baseUrl: string): WebSocketManager;
     subscribeToInstance(instanceId: string): void;
     sendMessage(message: WebSocketMessage): void;
     onEvent(eventType: string, callback: (data: any) => void): void;
