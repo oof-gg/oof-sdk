@@ -8,12 +8,14 @@ export class GameAPI {
 
     private sessionKey: string = 'oof_sdk_sessionId';
     private storageService: StorageService;
+    private eventDispatcher: any;
 
-    constructor(baseUrl: string, token: string) {
+    constructor(baseUrl: string, token: string, eventDispatcher?: any) {
         this.token = token;
         this.baseUrl = baseUrl;
         this.gameService = new v1_api_game_Game_serviceServiceClientPb.GameServiceClient(this.baseUrl);
         this.storageService = new StorageService();
+        this.eventDispatcher = eventDispatcher;
     }
 
     /**
@@ -25,7 +27,15 @@ export class GameAPI {
 
     // Sets the sessionId in local storage.
     private async setSessionId(sessionId: string): Promise<void> {
+        if (!sessionId) {
+            throw new Error('Session ID is required');
+        }
+        // Store the sessionId in local storage
         await this.storageService.setItem(this.sessionKey, sessionId);
+        this.eventDispatcher.emitEvent('local', 'GAME_STATE', {
+            state: 'QUEUED',
+            session_id: sessionId
+        });
     }
 
     public async joinGame(userId: string, gameId: string, sessionId?: string): Promise<any> {

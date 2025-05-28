@@ -43,6 +43,7 @@ class GameSDK {
                     });
                 },
                 emit: (eventType: string, payload: any) => {
+                    console.log('[SDK] Emitting event to game channel:', eventType, payload);
                     this.gameChannel.sendEvent(eventType, payload);
                 }
             },
@@ -61,7 +62,7 @@ class GameSDK {
         // Get the singleton instance of WebSocketManager
         this.webSocketManager = WebSocketManager.getInstance(sdkConfig.socketUrl);
         this.gameChannel = new SocketGameChannel(this.webSocketManager);
-        this.api.game = new GameAPI(sdkConfig.apiUrl, this.token);
+        this.api.game = new GameAPI(sdkConfig.apiUrl, this.token, this.eventDispatcher);
     }
 
     public async connect(token: string, sessionId: string): Promise<void> {
