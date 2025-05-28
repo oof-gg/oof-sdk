@@ -1,5 +1,7 @@
 export default class PlayerAPI {
     private baseUrl;
     private playerService;
-    constructor(baseUrl: string);
+    private token;
+    constructor(baseUrl: string, token: string);
+    getPlayer(playerId?: string): Promise<any>;
 }

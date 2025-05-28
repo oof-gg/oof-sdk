@@ -4,12 +4,13 @@ exports.GameAPI = void 0;
 const protobuf_ts_web_1 = require("@oof.gg/protobuf-ts-web");
 const StorageService_1 = require("../storage/StorageService");
 class GameAPI {
-    constructor(baseUrl, token) {
+    constructor(baseUrl, token, eventDispatcher) {
         this.sessionKey = 'oof_sdk_sessionId';
         this.token = token;
         this.baseUrl = baseUrl;
         this.gameService = new protobuf_ts_web_1.v1_api_game_Game_serviceServiceClientPb.GameServiceClient(this.baseUrl);
         this.storageService = new StorageService_1.StorageService();
+        this.eventDispatcher = eventDispatcher;
     }
     /**
     * Tries to retrieve the sessionId either from parameter or local storage.
@@ -19,7 +20,15 @@ class GameAPI {
     }
     // Sets the sessionId in local storage.
     async setSessionId(sessionId) {
+        if (!sessionId) {
+            throw new Error('Session ID is required');
+        }
+        // Store the sessionId in local storage
         await this.storageService.setItem(this.sessionKey, sessionId);
+        this.eventDispatcher.emitEvent('local', 'GAME_STATE', {
+            state: 'QUEUED',
+            session_id: sessionId
+        });
     }
     async joinGame(userId, gameId, sessionId) {
         const request = new protobuf_ts_web_1.v1_api_game_join_leave_pb.JoinLeaveGame();

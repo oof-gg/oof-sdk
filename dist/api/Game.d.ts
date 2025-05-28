@@ -5,7 +5,8 @@ export declare class GameAPI {
     private token;
     private sessionKey;
     private storageService;
-    constructor(baseUrl: string, token: string);
+    private eventDispatcher;
+    constructor(baseUrl: string, token: string, eventDispatcher?: any);
     /**
     * Tries to retrieve the sessionId either from parameter or local storage.
     */
